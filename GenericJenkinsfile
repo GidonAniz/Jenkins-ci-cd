@@ -1,12 +1,93 @@
 pipeline {
-  agent any
-  
-  stages {
-    stage('Git Clone') {
-      steps {
-        cleanWs()
-      }
+    agent any
+
+    environment {
+        AWS_REGION = 'eu-west-1'
+        INTERVAL = '5' // Set the interval for running the job
     }
-    
-  }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Linting') {
+            steps {
+                sh 'pip install -r requirements.txt --user'
+                sh 'pip install pylint'
+                sh 'pylint your_script.py'
+            }
+        }
+
+        stage('AWS Instance Check') {
+            steps {
+                sh 'aws ec2 describe-instances --region=$AWS_REGION --query "Reservations[*].Instances[*].[PublicIpAddress]" --filters "Name=tag:k8s.io/role/master,Values=1" "Name=instance-state-code,Values=16" --output text | sort -k2f > instances.txt'
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                sh 'docker build -t your_image_name .'
+                sh 'docker login -u your_username -p your_password'
+                sh 'docker push your_username/your_image_name:$BUILD_NUMBER'
+            }
+        }
+
+        stage('Helm Chart Packaging') {
+            steps {
+                sh 'helm package your_helm_chart_directory'
+            }
+        }
+
+        stage('Jenkins Build Number Labeling') {
+            steps {
+                script {
+                    def imageName = 'your_username/your_image_name'
+                    def taggedImageName = "${imageName}:${BUILD_NUMBER}"
+                    sh "docker tag ${imageName} ${taggedImageName}"
+                }
+            }
+        }
+
+        stage('Auto Merge to Master') {
+            when {
+                expression {
+                    currentBuild.resultIsBetterOrEqualTo('SUCCESS')
+                }
+            }
+            steps {
+                // Add your code for auto-merging to the master branch here
+            }
+        }
+
+        stage('Argo Deployment') {
+            when {
+                expression {
+                    currentBuild.resultIsBetterOrEqualTo('SUCCESS')
+                }
+            }
+            steps {
+                // Add your code for triggering Argo deployment here
+            }
+        }
+
+        stage('Update Helm Chart Image Version') {
+            steps {
+                script {
+                    def chartDir = 'your_helm_chart_directory'
+                    def valuesFile = "${chartDir}/values.yaml"
+                    def newImage = "your_username/your_image_name:${BUILD_NUMBER}"
+                    sh "sed -i -e 's#image: .*#image: ${newImage}#' ${valuesFile}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "JENKINSBUILDNUMBER:${BUILD_NUMBER}"
+        }
+    }
 }
