@@ -3,32 +3,29 @@ pipeline {
     stages {
         stage('PIP Install') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
             }
         }
         stage('Linting') {
             steps {
-                sh 'linting_command'  // Replace with your linting command
+                sh 'pylint Jenkins-ci-cd/python/app.py'
             }
         }
-        stage('Build and Push Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    def dockerImage = docker.build("yanivomc/k8stest:${BUILD_NUMBER}")
-                    dockerImage.push()
-                }
+                // Use an official Python runtime as a parent image
+                sh 'docker build -t my-python-app:${BUILD_NUMBER} -f Dockerfile .'
             }
         }
     }
     post {
         success {
             script {
-                // If the build is successful, merge changes into master and update Helm charts
                 sh 'git checkout master'
-                sh 'git merge dev'
+                sh 'git merge deve'
                 sh 'git push origin master'
-                // Update Helm charts with the new Docker image version
-                // You need to write this part based on your Helm chart structure
+
+                sh 'helm upgrade k8stest k8stest/ --set image.tag=${BUILD_NUMBER}'
             }
         }
     }
