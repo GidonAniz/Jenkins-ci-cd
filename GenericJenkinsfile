@@ -25,7 +25,7 @@ pipeline {
             script {
                 // If the build is successful, merge changes into master and update Helm charts
                 sh 'git checkout master'
-                sh 'git merge development'
+                sh 'git merge dev'
                 sh 'git push origin master'
                 // Update Helm charts with the new Docker image version
                 // You need to write this part based on your Helm chart structure
