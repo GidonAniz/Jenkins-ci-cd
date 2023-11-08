@@ -1,31 +1,56 @@
 pipeline {
     agent any
+
     stages {
-        stage('PIP Install') {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
             steps {
                 sh 'pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
             }
         }
+
         stage('Linting') {
             steps {
                 sh 'pylint Jenkins-ci-cd/python/app.py'
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                // Use an official Python runtime as a parent image
                 sh 'docker build -t my-python-app:${BUILD_NUMBER} -f Dockerfile .'
             }
         }
+
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker push my-python-app:${BUILD_NUMBER}'
+            }
+        }
+
+        stage('Package Helm Chart') {
+            steps {
+                // Package your Helm chart (e.g., my-python-app) here
+            }
+        }
+
+        stage('Helm Deploy') {
+            steps {
+                sh 'helm upgrade my-python-app my-python-app/ --set image.tag=${BUILD_NUMBER}'
+            }
+        }
     }
+
     post {
         success {
             script {
                 sh 'git checkout master'
-                sh 'git merge deve'
+                sh 'git merge dev'
                 sh 'git push origin master'
-
-                sh 'helm upgrade k8stest k8stest/ --set image.tag=${BUILD_NUMBER}'
             }
         }
     }
