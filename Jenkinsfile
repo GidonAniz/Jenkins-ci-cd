@@ -10,25 +10,33 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
+                script {
+                    sh 'pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
+                }
             }
         }
 
         stage('Linting') {
             steps {
-                sh 'pylint Jenkins-ci-cd/python/app.py'
+                script {
+                    sh 'pylint Jenkins-ci-cd/python/app.py'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-python-app:${BUILD_NUMBER} -f Dockerfile .'
+                script {
+                    sh "docker build -t my-python-app:${BUILD_NUMBER} -f Dockerfile ."
+                }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push my-python-app:${BUILD_NUMBER}'
+                script {
+                    sh "docker push my-python-app:${BUILD_NUMBER}"
+                }
             }
         }
 
@@ -40,7 +48,9 @@ pipeline {
 
         stage('Helm Deploy') {
             steps {
-                sh 'helm upgrade my-python-app my-python-app/ --set image.tag=${BUILD_NUMBER}'
+                script {
+                    sh "helm upgrade my-python-app my-python-app/ --set image.tag=${BUILD_NUMBER}"
+                }
             }
         }
     }
