@@ -27,7 +27,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t my-python-app:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
+                    // Use Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker build -t your-docker-username/my-python-app:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
+                    }
                 }
             }
         }
@@ -35,7 +39,10 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh "docker push my-python-app:${BUILD_NUMBER}"
+                    // Use Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: 1496238a-5997-4eeb-a124-459a08a17217, usernameVariable: gidonan, passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker push gidonan/my-python-app:${BUILD_NUMBER}"
+                    }
                 }
             }
         }
