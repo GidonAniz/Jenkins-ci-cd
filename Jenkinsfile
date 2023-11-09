@@ -27,7 +27,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t my-python-app:${BUILD_NUMBER} -f Dockerfile ."
+                    sh "docker build -t my-python-app:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
                 }
             }
         }
