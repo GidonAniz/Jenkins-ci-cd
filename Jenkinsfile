@@ -11,8 +11,8 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    sh 'sudo yum update'
-                    sh 'sudo yum install -y python3-pip'
+                    sh 'sudo update'
+                    sh 'sudo install -y python3-pip'
                     sh 'pip3 install pylint'
                 }
             }
