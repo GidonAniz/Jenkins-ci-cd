@@ -40,12 +40,6 @@ pipeline {
             }
         }
 
-        stage('Package Helm Chart') {
-            steps {
-                // Package your Helm chart (e.g., my-python-app) here
-            }
-        }
-
         stage('Helm Deploy') {
             steps {
                 script {
