@@ -11,8 +11,8 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    sh 'apt-get update'
-                    sh 'apt-get install -y python3-pip'
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install -y python3-pip'
                     sh 'pip3 install pylint'
                 }
             }
