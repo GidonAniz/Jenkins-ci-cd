@@ -13,7 +13,7 @@ pipeline {
                 script {
                     sh 'sudo yum update'
                     sh 'sudo yum install -y python3-pip'
-                    sh 'pip3 install pylint'
+                    sh 'sudo yum pip3 install pylint'
                 }
             }
         }
