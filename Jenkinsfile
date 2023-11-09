@@ -8,11 +8,11 @@ pipeline {
             }
         }
 
-         stage('Setup') {
+        stage('Setup') {
             steps {
                 script {
-                    sh 'apt-get update'
-                    sh 'apt-get install -y python3-pip'
+                    sh 'sudo yum update'
+                    sh 'sudo yum install -y python3-pip'
                     sh 'pip3 install pylint'
                 }
             }
