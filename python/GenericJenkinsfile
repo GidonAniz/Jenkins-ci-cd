@@ -49,7 +49,7 @@ pipeline {
         success {
             script {
                 sh 'git checkout master'
-                sh 'git merge development'
+                sh 'git merge dev'
                 sh 'git push origin master'
             }
         }
