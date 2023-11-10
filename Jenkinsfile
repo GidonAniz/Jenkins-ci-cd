@@ -42,7 +42,7 @@ pipeline {
                     // Use Docker Hub credentials
                     withCredentials([usernamePassword(credentialsId: 'bed587c7-2800-453a-8e8c-4ba1b61611d8', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                        sh "docker build -t gidonan/my-python-app:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
+                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
                     }
                 }
             }
@@ -53,7 +53,7 @@ pipeline {
                 script {
                     // Use Docker Hub credentials
                     withCredentials([usernamePassword(credentialsId: 'bed587c7-2800-453a-8e8c-4ba1b61611d8', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker push gidonan/my-python-app:${BUILD_NUMBER}"
+                        sh "docker push gidonan/cicd:${BUILD_NUMBER}"
                     }
                 }
             }
