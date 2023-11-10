@@ -14,6 +14,7 @@ pipeline {
                     sh 'apt-get update'
                     sh 'apt-get install -y python3-venv'
                     sh 'python3 -m venv venv'
+                    sh '. venv/bin/activate && pip install pylint'
                 }
             }
         }
