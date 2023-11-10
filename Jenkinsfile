@@ -22,6 +22,8 @@ pipeline {
             steps {
                 script {
                     sh '. venv/bin/activate && pip install -r  python/requirements.txt --target ./pip_cache'
+                    // Install boto3
+                    sh '. venv/bin/activate && pip install boto3'
                 }
             }
         }
