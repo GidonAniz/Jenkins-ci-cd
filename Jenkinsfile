@@ -21,7 +21,7 @@ pipeline {
         stage('Install Python Dependencies') {
             steps {
                 script {
-                    sh '. venv/bin/activate && pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
+                    sh '. venv/bin/activate && pip install -r  python/requirements.txt --target ./pip_cache'
                 }
             }
         }
