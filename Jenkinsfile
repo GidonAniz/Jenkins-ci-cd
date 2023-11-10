@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HOME = tool name: 'Docker', type: 'com.cloudbees.jenkins.plugins.docker_commons.DockerTool'
-        PATH = "$DOCKER_HOME:$PATH"
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
