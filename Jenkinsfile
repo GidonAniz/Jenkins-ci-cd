@@ -26,10 +26,9 @@ pipeline {
             }
         }
 
-       stage('Linting') {
+          stage('Linting') {
             steps {
                 script {
-                    sh '. venv/bin/activate && pylint Jenkins-ci-cd/python/app.py' || true
                     sh '. venv/bin/activate && pylint python/app.py'
                 }
             }
