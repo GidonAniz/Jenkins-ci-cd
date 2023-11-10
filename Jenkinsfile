@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Linting') {
+       stage('Linting') {
             steps {
                 script {
                     sh '. venv/bin/activate && pylint python/app.py'
