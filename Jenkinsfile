@@ -8,6 +8,11 @@ pipeline {
             }
         }
 
+        environment {
+        DOCKER_HOME = tool name: 'Docker', type: 'com.cloudbees.jenkins.plugins.docker_commons.DockerTool'
+        PATH = "$DOCKER_HOME:$PATH"
+         }
+
         stage('Setup') {
             steps {
                 script {
