@@ -12,16 +12,16 @@ pipeline {
             steps {
                 script {
                     sh 'apt-get update'
-                    sh 'apt-get install -y python3-pip'
-                    sh 'pip3 install pylint'
+                    sh 'apt-get install -y python3-venv'
+                    sh 'python3 -m venv venv'
                 }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Python Dependencies') {
             steps {
                 script {
-                    sh 'pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
+                    sh '. venv/bin/activate && pip install -r Jenkins-ci-cd/python/requirements.txt --target ./pip_cache'
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
         stage('Linting') {
             steps {
                 script {
-                    sh 'pylint Jenkins-ci-cd/python/app.py'
+                    sh '. venv/bin/activate && pylint Jenkins-ci-cd/python/app.py'
                 }
             }
         }
