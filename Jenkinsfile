@@ -29,6 +29,7 @@ pipeline {
        stage('Linting') {
             steps {
                 script {
+                    sh '. venv/bin/activate && pip install pylint && pylint python/app.py'
                     sh '. venv/bin/activate && pylint python/app.py'
                 }
             }
