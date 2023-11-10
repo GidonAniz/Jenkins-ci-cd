@@ -31,9 +31,7 @@ pipeline {
           stage('Linting') {
             steps {
                 script {
-                     def pylintExitCode = sh script: '. venv/bin/activate && pylint python/app.py || true', returnStatus: true
-                        if (pylintExitCode != 0) {
-                            currentBuild.result = 'UNSTABLE' // Mark the build as unstable if there are linting issues
+                    sh '. venv/bin/activate && pylint python/app.py || true'
                 }
             }
         }
