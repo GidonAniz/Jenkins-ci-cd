@@ -47,7 +47,7 @@ pipeline {
                 echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin
                 """
                 // Build the Docker image
-                sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
+                sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f python/Dockerfile ."
             }
         }
     }
