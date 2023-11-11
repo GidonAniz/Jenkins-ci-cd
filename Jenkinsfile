@@ -38,27 +38,37 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                script {
-                    // Use Docker Hub credentials
-                    withCredentials([usernamePassword(credentialsId: 'b5aaf9cd-ea18-4141-a22f-59f07ed41b2c', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
-                    }
-                }
+    steps {
+        script {
+            // Use Docker Hub credentials
+            withCredentials([usernamePassword(credentialsId: 'b5aaf9cd-ea18-4141-a22f-59f07ed41b2c', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                // Log in to Docker securely
+                sh """
+                echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin
+                """
+                // Build the Docker image
+                sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Jenkins-ci-cd/python/Dockerfile ."
             }
         }
+    }
+}
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    // Use Docker Hub credentials
-                    withCredentials([usernamePassword(credentialsId: 'b5aaf9cd-ea18-4141-a22f-59f07ed41b2c', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker push gidonan/cicd:${BUILD_NUMBER}"
-                    }
-                }
+       stage('Push Docker Image') {
+    steps {
+        script {
+            // Use Docker Hub credentials
+            withCredentials([usernamePassword(credentialsId: 'b5aaf9cd-ea18-4141-a22f-59f07ed41b2c', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                // Log in to Docker securely
+                sh """
+                echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin
+                """
+                // Push the Docker image
+                sh "docker push gidonan/cicd:${BUILD_NUMBER}"
             }
         }
+    }
+}
+
 
         stage('Helm Deploy') {
             steps {
