@@ -84,7 +84,7 @@ pipeline {
                         // Push changes to 'master' with credentials
                         withCredentials([usernamePassword(credentialsId: 'c9a05144-5c1c-49b0-9786-ea924eeee2dd', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                             sh "git config --global credential.helper store"
-                            sh "git push https://$USERNAME:$PASSWORD@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                            sh "git push https://$USERNAME:$TOKEN@github.com/GidonAniz/Jenkins-ci-cd.git master"
                         }
                     } catch (Exception e) {
                         error "Error occurred while merging branches: ${e.message}"
