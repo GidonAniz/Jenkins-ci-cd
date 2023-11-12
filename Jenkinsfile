@@ -77,10 +77,11 @@ pipeline {
     steps {
         script {
             // Run the Docker container
-            sh "docker run gidonan/cicd:${BUILD_NUMBER} > output.json"
+            sh "docker run gidonan/cicd:${BUILD_NUMBER}"
         }
     }
 }
+
 
 stage('Merge and Push Changes') {
     steps {
