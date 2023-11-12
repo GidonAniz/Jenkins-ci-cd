@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-       stage('Merge and Push Changes') {
+      stage('Merge and Push Changes') {
             steps {
                 script {
                     try {
