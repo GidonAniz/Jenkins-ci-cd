@@ -74,23 +74,26 @@ pipeline {
         }
 
       stage('Merge and Push Changes') {
-            steps {
-                script {
-                    try {
-                        // Merge 'dev' into 'master'
-                        sh 'git checkout master'
-                        sh 'git merge origin/dev'
+    steps {
+        script {
+            try {
+                // Checkout 'master' branch
+                sh 'git checkout master'
+                
+                // Merge 'origin/dev' into 'master'
+                sh 'git merge origin/dev'
 
-                        // Push changes to 'master' with credentials
-                            sh "git push https://github.com/GidonAniz/Jenkins-ci-cd.git master"
-                        }
-                    } catch (Exception e) {
-                        error "Error occurred while merging branches: ${e.message}"
-                    }
+                // Push changes to 'master' with credentials
+                withCredentials([usernamePassword(credentialsId: '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', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh "git push https://${USERNAME}:${PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
                 }
+            } catch (Exception e) {
+                error "Error occurred while merging branches: ${e.message}"
             }
+          }
         }
     }
+}
         
     post {
         always {
