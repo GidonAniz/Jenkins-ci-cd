@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-     environment {
-        HELM_HOME = tool 'Helm' // Use Helm defined in Jenkins Global Tool Configuration
+    environment {
+        PATH = "$PATH:/usr/local/bin/helm" // Adjust to the actual Helm binary path
     }
 
     stages {
