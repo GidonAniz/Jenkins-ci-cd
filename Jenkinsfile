@@ -92,6 +92,7 @@ pipeline {
                 }
             }
         }
+    }
         
     post {
         always {
@@ -111,5 +112,4 @@ pipeline {
             echo 'Merging or push failed'
         }
     }
-}
 }
