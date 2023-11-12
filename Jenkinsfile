@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage('Merge and Push Changes') {
+       stage('Merge and Push Changes') {
             steps {
                 script {
                     try {
@@ -81,16 +81,18 @@ pipeline {
                         sh 'git checkout master'
                         sh 'git merge origin/dev'
 
-                        // Push changes to 'master'
-                        sh 'git push origin master'
+                        // Push changes to 'master' with credentials
+                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh "git config --global credential.helper store"
+                            sh "git push https://$USERNAME:$PASSWORD@github.com/your-username/your-repo.git master"
+                        }
                     } catch (Exception e) {
                         error "Error occurred while merging branches: ${e.message}"
                     }
                 }
             }
         }
-    }
-
+        
     post {
         always {
             script {
