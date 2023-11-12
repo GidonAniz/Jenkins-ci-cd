@@ -77,9 +77,19 @@ pipeline {
     steps {
         script {
             // Run the Docker container
-            sh "docker run gidonan/cicd:${BUILD_NUMBER}"
+            def containerID = sh(script: "docker run -d gidonan/cicd:${BUILD_NUMBER}", returnStdout: true).trim()
+
             // Display the container logs
-            sh "docker logs <container_id_or_name>"
+            sh "docker logs $containerID"
+
+            // Check the exit code of the Docker container
+            def exitCode = sh(script: "docker wait $containerID", returnStatus: true)
+
+            if (exitCode == 0) {
+                echo "Docker container executed successfully"
+            } else {
+                error "Docker container execution failed"
+            }
         }
     }
 }
