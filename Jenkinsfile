@@ -72,27 +72,22 @@ pipeline {
                 }
             }
         }
-
-      stage('Merge and Push Changes') {
+stage('Merge and Push Changes') {
     steps {
         script {
-            try {
+            withCredentials([string(credentialsId: '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', variable: 'TOKEN')]) {
                 // Checkout 'master' branch
                 sh 'git checkout master'
                 
                 // Merge 'origin/dev' into 'master'
                 sh 'git merge origin/dev'
 
-                // Push changes to 'master' with credentials
-                withCredentials([usernamePassword(credentialsId: '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', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh "git push https://${USERNAME}:${PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
-                }
-            } catch (Exception e) {
-                error "Error occurred while merging branches: ${e.message}"
+                // Push changes to 'master' with token credentials
+                sh "git push https://${TOKEN}@github.com/GidonAniz/Jenkins-ci-cd.git master"
             }
-          }
         }
     }
+}
 }
         
     post {
