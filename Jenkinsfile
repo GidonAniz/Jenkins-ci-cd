@@ -77,21 +77,11 @@ pipeline {
     steps {
         script {
             // Run the Docker container
-            def containerID = sh (script: "docker run -d gidonan/cicd:${BUILD_NUMBER}", returnStdout: true).trim()
-            // Save the container ID for future reference or log purposes
-            echo "Container ID: $containerID"
+            sh "docker run gidonan/cicd:${BUILD_NUMBER} > output.json"
         }
     }
 }
 
-stage('Display Container Logs') {
-    steps {
-        script {
-            // Display the container logs
-            sh "docker logs $containerID"
-        }
-    }
-}
 stage('Merge and Push Changes') {
     steps {
         script {
