@@ -82,7 +82,7 @@ pipeline {
                         sh 'git merge origin/dev'
 
                         // Push changes to 'master' with credentials
-                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: '951d6d96-dd39-4f39-a181-ee5b0bf2fe4a', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                             sh "git config --global credential.helper store"
                             sh "git push https://$USERNAME:$PASSWORD@github.com/your-username/your-repo.git master"
                         }
