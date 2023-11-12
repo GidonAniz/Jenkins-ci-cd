@@ -72,6 +72,17 @@ pipeline {
                 }
             }
         }
+
+    stage('Run Docker Container') {
+    steps {
+        script {
+            // Run the Docker container
+            sh "docker run gidonan/cicd:${BUILD_NUMBER}"
+            // Display the container logs
+            sh "docker logs <container_id_or_name>"
+        }
+    }
+}
 stage('Merge and Push Changes') {
     steps {
         script {
