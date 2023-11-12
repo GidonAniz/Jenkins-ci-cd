@@ -73,14 +73,13 @@ pipeline {
             }
         }
 
-    stage('Run Docker Container') {
+   stage('Run Docker Container') {
     steps {
         script {
             // Run the Docker container
-            def containerID = sh(script: "docker run -d gidonan/cicd:${BUILD_NUMBER}", returnStdout: true).trim()
-
+            sh "docker run gidonan/cicd:${BUILD_NUMBER}"
             // Display the container logs
-            sh "docker logs $containerID"
+            sh "docker logs <container_id_or_name>"
         }
     }
 }
