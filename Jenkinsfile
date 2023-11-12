@@ -77,7 +77,7 @@ pipeline {
         stage('Helm Deploy') {
             steps {
                 script {
-                    sh "helm upgrade my-python-app my-python-app/ --set image.tag=${BUILD_NUMBER}"
+                    sh "helm upgrade my-python-app cicd/ --set image.tag=${BUILD_NUMBER}"
                 }
             }
         }
