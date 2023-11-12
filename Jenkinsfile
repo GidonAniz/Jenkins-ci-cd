@@ -75,13 +75,40 @@ pipeline {
 
     }
 
+       stage('Merge and Push Changes') {
+            steps {
+                script {
+                    try {
+                        // Merge 'dev' into 'master'
+                        sh 'git checkout master'
+                        sh 'git merge origin/dev'
+
+                        // Push changes to 'master'
+                        sh 'git push origin master'
+                    } catch (Exception e) {
+                        error "Error occurred while merging branches: ${e.message}"
+                    }
+                }
+            }
+        }
+    }
+
     post {
+        always {
+            script {
+                catchError {
+                    // Ensure cleanup even on failure
+                    sh 'git reset --hard HEAD' // Reset in case of failed merge
+                }
+            }
+        }
         success {
             script {
-                sh 'git checkout master'
-                sh 'git merge dev'
-                sh 'git push origin master'
+                echo 'Merging and push successful'
             }
+        }
+        failure {
+            echo 'Merging or push failed'
         }
     }
 }
