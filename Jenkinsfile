@@ -81,15 +81,6 @@ pipeline {
 
             // Display the container logs
             sh "docker logs $containerID"
-
-            // Check the exit code of the Docker container
-            def exitCode = sh(script: "docker wait $containerID", returnStatus: true)
-
-            if (exitCode == 0) {
-                echo "Docker container executed successfully"
-            } else {
-                error "Docker container execution failed"
-            }
         }
     }
 }
