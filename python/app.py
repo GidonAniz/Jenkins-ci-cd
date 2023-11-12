@@ -3,9 +3,9 @@ import boto3
 def get_instance_information():
     # Set AWS credentials using the environment variables
     session = boto3.Session(
-        aws_access_key_id='YOUR_ACCESS_KEY',
-        aws_secret_access_key='YOUR_SECRET_KEY',
-        region_name='YOUR_REGION'
+        aws_access_key_id='AKIA5XC7JSBWTTL763BI',
+        aws_secret_access_key='I75zrDStht2cjOUjjiq7r8QH1POJ/Q1tPi59wU5V',
+        region_name='us-east-1'
     )
     
     ec2 = session.client('ec2')
