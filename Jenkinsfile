@@ -72,9 +72,6 @@ pipeline {
         }
     }
 }
-
-    }
-
        stage('Merge and Push Changes') {
             steps {
                 script {
