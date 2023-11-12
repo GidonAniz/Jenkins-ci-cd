@@ -1,5 +1,4 @@
 import boto3
-import json
 
 def get_instance_information():
     # Set AWS credentials using the environment variables
@@ -29,18 +28,14 @@ def get_instance_information():
     instances = []
     for reservation in response['Reservations']:
         for instance in reservation['Instances']:
-            instance_details = {
-                'InstanceId': instance['InstanceId'],
-                'InstanceName': next((tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name'), 'Unnamed')
-            }
-            instances.append(instance_details)
+            instances.append(instance)
 
-    # Return the instance details
-    return instances
+    # Return the instance IDs and instance names
+    return [(instance['InstanceId'], next((tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name'), 'Unnamed')) for instance in instances]
 
 if __name__ == "__main__":
     instance_info = get_instance_information()
 
-    # Convert the instance information to JSON
-    json_info = json.dumps(instance_info, indent=2)
-    print(json_info)
+    # Print the instance IDs and instance names
+    for instance_id, instance_name in instance_info:
+        print(f"Instance ID: {instance_id}, Instance Name: {instance_name}")
