@@ -83,7 +83,7 @@ stage('Merge and Push Changes') {
                 sh 'git merge origin/dev'
 
                 // Push changes to 'master' with credentials
-                withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: 'GidonAniz', passwordVariable: 'Ganiz261102!')]) {
+                withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: '', passwordVariable: '')]) {
                     sh "git push https://${USERNAME}:${PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
                 }
             } catch (Exception e) {
