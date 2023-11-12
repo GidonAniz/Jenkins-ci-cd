@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+     environment {
+        HELM_HOME = tool 'Helm' // Use Helm defined in Jenkins Global Tool Configuration
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
