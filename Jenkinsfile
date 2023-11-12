@@ -77,7 +77,8 @@ pipeline {
         stage('Helm Deploy') {
             steps {
                 script {
-                    sh "helm upgrade my-python-app cicd/ --set image.tag=${BUILD_NUMBER}"
+                     sh "helm repo add my-repo https://hub.docker.com/repositories/gidonan/my-charts"
+                     sh "helm repo update" // Optional: update the repository to fetch the latest charts
                 }
             }
         }
