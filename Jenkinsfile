@@ -77,7 +77,7 @@ pipeline {
         stage('Helm Deploy') {
             steps {
                 script {
-                     sh "helm repo add my-repo https://github.com/GidonAniz/Jenkins-ci-cd.git"
+                     sh "helm repo add my-repo https://github.com/GidonAniz/Jenkins-ci-cd"
                      sh "helm repo update" // Optional: update the repository to fetch the latest charts
                 }
             }
