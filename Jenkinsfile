@@ -1,8 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        PATH = "$PATH:/usr/local/bin/helm" // Adjust to the actual Helm binary path
+ environment {
+        GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
+        GITHUB_APP_PRIVATE_KEY = 'afe25623-3632-4320-ad34-89ce96429f58'
     }
 
     stages {
@@ -82,27 +83,29 @@ pipeline {
     }
 }
 
-  stage('Merge Dev to Master') {
-    steps {
-        script {
-            try {
-                // Checkout 'master' branch
-                sh 'git checkout master'
+ stage('Merge Dev to Master') {
+            steps {
+                script {
+                    try {
+                        // Checkout 'master' branch
+                        sh 'git checkout master'
+                        
+                        // Use GitHub App credentials from Jenkins
+                        withCredentials([
+                            sshUserPrivateKey(credentialsId: GITHUB_APP_CREDENTIALS_ID, keyFileVariable: 'GITHUB_APP_PRIVATE_KEY')
+                        ]) {
+                            // Merge 'origin/dev' into 'master'
+                            sh 'git merge origin/dev'
 
-                // Configure Git with personal access token
-                sh 'git config credential.helper "!f() { echo password=${afe25623-3632-4320-ad34-89ce96429f58}; }; f"'
-
-                // Merge 'origin/dev' into 'master'
-                sh 'git merge origin/dev'
-
-                // Push changes to 'master'
-                sh 'git push origin master'
-            } catch (Exception e) {
-                error "Error occurred while merging branches: ${e.message}"
+                            // Push changes to 'master'
+                            sh 'git push origin master'
+                        }
+                    } catch (Exception e) {
+                        error "Error occurred while merging branches: ${e.message}"
+                    }
+                }
             }
         }
-    }
-}
 
     }
 
