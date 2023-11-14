@@ -82,30 +82,24 @@ pipeline {
     }
 }
 
- stage('Merge and Push Changes') {
-    steps {
-        script {
-            try {
-                // Checkout 'master' branch
-                sh 'git checkout master'
+  stage('Merge Dev to Master') {
+            steps {
+                script {
+                    try {
+                        // Checkout 'master' branch
+                        sh 'git checkout master'
 
-                // Merge 'origin/dev' into 'master'
-                sh 'git merge origin/dev'
+                        // Merge 'origin/dev' into 'master'
+                        sh 'git merge origin/dev'
 
-                // Use GitHub App credentials from Jenkins
-                withCredentials([usernamePassword(credentialsId: 'afe25623-3632-4320-ad34-89ce96429f58', usernameVariable: 'GITHUB_APP_ID', passwordVariable: 'GITHUB_APP_KEY')]) {
-                    // Set up SSH key for Git
-                    sh "echo '${GITHUB_APP_KEY}' > github_app_key.pem"
-                    sh 'git config core.sshCommand "ssh -i github_app_key.pem -o StrictHostKeyChecking=no"'
-                    // Push changes to 'master'
-                    sh 'git push origin master'
+                        // Push changes to 'master'
+                        sh 'git push origin master'
+                    } catch (Exception e) {
+                        error "Error occurred while merging branches: ${e.message}"
+                    }
                 }
-            } catch (Exception e) {
-                error "Error occurred while merging branches: ${e.message}"
             }
         }
-    }
-}
 
     }
 
