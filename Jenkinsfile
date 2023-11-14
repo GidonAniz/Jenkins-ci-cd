@@ -83,13 +83,13 @@ pipeline {
     }
 }
 
- stage('Merge Dev to Master') {
+  stage('Merge Dev to Master') {
             steps {
                 script {
                     try {
                         // Checkout 'master' branch
                         sh 'git checkout master'
-                        
+
                         // Use GitHub App credentials from Jenkins
                         withCredentials([
                             sshUserPrivateKey(credentialsId: GITHUB_APP_CREDENTIALS_ID, keyFileVariable: 'GITHUB_APP_PRIVATE_KEY')
@@ -106,7 +106,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {
