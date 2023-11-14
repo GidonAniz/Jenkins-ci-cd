@@ -109,7 +109,7 @@ pipeline {
                         sh 'git merge origin/dev'
 
                         // push changes to 'master'
-                        sh 'git push origin master'
+                         sh "git push https://github.com/GidonAniz/Jenkins-ci-cd.git master"
                     } catch (Exception e) {
                         // Handle merge failure or check failures
                         error "Error occurred while merging branches: ${e.message}"
