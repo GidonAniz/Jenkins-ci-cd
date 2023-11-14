@@ -83,23 +83,26 @@ pipeline {
 }
 
   stage('Merge Dev to Master') {
-            steps {
-                script {
-                    try {
-                        // Checkout 'master' branch
-                        sh 'git checkout master'
+    steps {
+        script {
+            try {
+                // Checkout 'master' branch
+                sh 'git checkout master'
 
-                        // Merge 'origin/dev' into 'master'
-                        sh 'git merge origin/dev'
+                // Configure Git with personal access token
+                sh 'git config credential.helper "!f() { echo password=${afe25623-3632-4320-ad34-89ce96429f58}; }; f"'
 
-                        // Push changes to 'master'
-                        sh 'git push origin master'
-                    } catch (Exception e) {
-                        error "Error occurred while merging branches: ${e.message}"
-                    }
-                }
+                // Merge 'origin/dev' into 'master'
+                sh 'git merge origin/dev'
+
+                // Push changes to 'master'
+                sh 'git push origin master'
+            } catch (Exception e) {
+                error "Error occurred while merging branches: ${e.message}"
             }
         }
+    }
+}
 
     }
 
