@@ -99,6 +99,10 @@ pipeline {
                                   userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
                                                       url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
+                        // Configure Git user identity
+                        sh 'git config user.email "Gidon.Aniz@gmail.com"'
+                        sh 'git config user.name "G.A"'
+
                         sh 'git merge --allow-unrelated-histories origin/dev'
 
                         // Merge 'origin/dev' into 'master'
