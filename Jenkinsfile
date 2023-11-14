@@ -99,6 +99,8 @@ pipeline {
                                   userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
                                                       url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
+                        sh 'git merge --allow-unrelated-histories origin/dev'
+
                         // Merge 'origin/dev' into 'master'
                         sh 'git merge origin/dev'
 
