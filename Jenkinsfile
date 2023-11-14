@@ -2,7 +2,7 @@ pipeline {
     agent any
 
  environment {
-        GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58''
+        GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
     }
 
     stages {
