@@ -92,7 +92,10 @@ stage('Merge and Push Changes') {
                 sh 'git merge origin/dev'
 
                 // Use GitHub App credentials from Jenkins
-                withCredentials([[$class: 'GitHubAppCredentials', credentialsId: 'afe25623-3632-4320-ad34-89ce96429f58', apiUri: 'https://api.github.com']]) {
+                withCredentials([string(credentialsId: 'afe25623-3632-4320-ad34-89ce96429f58', variable: 'PRIVATE_KEY')]) {
+                    // Set up SSH key for Git
+                    sh "echo '${PRIVATE_KEY}' > private_key.pem"
+                    sh 'git config core.sshCommand "ssh -i private_key.pem -o StrictHostKeyChecking=no"'
                     // Push changes to 'master'
                     sh 'git push origin master'
                 }
@@ -101,6 +104,7 @@ stage('Merge and Push Changes') {
             }
         }
     }
+}
 }
     }
 
