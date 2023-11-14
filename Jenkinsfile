@@ -105,7 +105,6 @@ stage('Merge and Push Changes') {
         }
     }
 }
-}
     }
 
     post {
