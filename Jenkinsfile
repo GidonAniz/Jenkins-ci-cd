@@ -2,8 +2,7 @@ pipeline {
     agent any
 
  environment {
-        GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
-        GITHUB_APP_PRIVATE_KEY = 'afe25623-3632-4320-ad34-89ce96429f58'
+        GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58''
     }
 
     stages {
@@ -83,24 +82,30 @@ pipeline {
     }
 }
 
-  stage('Merge Dev to Master') {
+   stage('Merge Dev to Master') {
             steps {
                 script {
                     try {
-                        // Checkout 'master' branch
-                        sh 'git checkout master'
+                        // Checkout the code using GitHub App credentials
+                        checkout([$class: 'GitSCM', 
+                                  branches: [[name: '*/master']], 
+                                  doGenerateSubmoduleConfigurations: false, 
+                                  extensions: [[$class: 'CloneOption', 
+                                                depth: 1, 
+                                                noTags: false, 
+                                                shallow: true, 
+                                                reference: '/path/to/git/reference']], 
+                                  submoduleCfg: [], 
+                                  userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                                      url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
-                        // Use GitHub App credentials from Jenkins
-                        withCredentials([
-                            sshUserPrivateKey(credentialsId: GITHUB_APP_CREDENTIALS_ID, keyFileVariable: 'GITHUB_APP_PRIVATE_KEY')
-                        ]) {
-                            // Merge 'origin/dev' into 'master'
-                            sh 'git merge origin/dev'
+                        // Merge 'origin/dev' into 'master'
+                        sh 'git merge origin/dev'
 
-                            // Push changes to 'master'
-                            sh 'git push origin master'
-                        }
+                        // push changes to 'master'
+                        sh 'git push origin master'
                     } catch (Exception e) {
+                        // Handle merge failure or check failures
                         error "Error occurred while merging branches: ${e.message}"
                     }
                 }
