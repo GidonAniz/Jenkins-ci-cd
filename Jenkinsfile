@@ -101,22 +101,18 @@ stage('Merge Dev to Master') {
                                               url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
                 // Configure Git user identity
-                sh "git config user.email 'Gidon.Aniz@gmail.com'"
-                sh "git config user.name 'G.A'"
+                sh 'git config user.email "Gidon.Aniz@gmail.com"'
+                sh 'git config user.name "G.A"'
 
                 // Fetch changes from both branches
                 sh 'git fetch origin dev'
                 sh 'git fetch origin master'
-                sh 'git pull origin master'
 
                 // Checkout to 'master'
                 sh 'git checkout master'
 
-                // Merge 'origin/dev' into 'master' with strategy 'ours' to prefer master changes
-                sh 'git merge -s ours --allow-unrelated-histories origin/dev'
-
-                // Pull changes from remote 'master' to local 'master'
-                sh 'git pull origin master'
+                // Merge 'origin/dev' into 'master'
+                sh 'git merge origin/dev'
 
                 // Push changes to 'master'
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
