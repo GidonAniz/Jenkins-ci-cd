@@ -83,7 +83,6 @@ pipeline {
     }
 }
 
-
   stage('Merge Dev to Master') {
             steps {
                 script {
@@ -95,8 +94,8 @@ pipeline {
                         sh 'git checkout dev'
                         sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                        // Switch to a new branch for the merge
-                        sh 'git checkout -b merge-branch'
+                        // Switch to master branch
+                        sh 'git checkout master'
 
                         // Merge changes from origin/dev
                         sh 'git merge --allow-unrelated-histories origin/dev'
@@ -112,7 +111,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                               usernameVariable: 'GIT_USERNAME',
                                                               passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
                             }
                         } else {
                             echo 'No changes to merge. Skipping commit and push.'
