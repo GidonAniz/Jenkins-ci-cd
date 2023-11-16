@@ -83,6 +83,7 @@ pipeline {
     }
 }
 
+
 stage('Merge Dev to Master') {
     steps {
         script {
@@ -101,25 +102,25 @@ stage('Merge Dev to Master') {
                                               url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
                 // Configure Git user identity
-                sh "git config user.email 'Gidon.Aniz@gmail.com'"
-                sh "git config user.name 'G.A'"
+                sh 'git config user.email "Gidon.Aniz@gmail.com"'
+                sh 'git config user.name "G.A"'
 
                 // Fetch changes from both branches
                 sh 'git fetch origin dev'
                 sh 'git fetch origin master'
-                sh 'git pull origin master'
 
-                // Checkout to 'master'
-                sh 'git checkout master'
+                // Create a new branch for the merge
+                sh 'git checkout -b merge-branch'
 
-                // Merge 'origin/dev' into 'master'
+                // Merge 'origin/dev' into 'merge-branch' with --allow-unrelated-histories
                 sh 'git merge --allow-unrelated-histories origin/dev'
 
-                // Pull changes from remote 'master' to local 'master'
-                sh 'git pull origin master'
-
                 // Push changes to 'master'
-                sh "git push https://GidonAniz:${'afe25623-3632-4320-ad34-89ce96429f58'}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                                  usernameVariable: 'GIT_USERNAME', 
+                                                  passwordVariable: 'GIT_PASSWORD')]) {
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
+                }
             } catch (Exception e) {
                 // Handle merge failure or check failures
                 error "Error occurred while merging branches: ${e.message}"
