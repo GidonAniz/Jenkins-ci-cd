@@ -83,6 +83,7 @@ pipeline {
     }
 }
 
+
 stage('Merge Dev to Master') {
     steps {
         script {
@@ -108,20 +109,17 @@ stage('Merge Dev to Master') {
                 sh 'git fetch origin dev'
                 sh 'git fetch origin master'
 
-                // Checkout to 'master'
-                sh 'git checkout master'
+                // Create a new branch for the merge
+                sh 'git checkout -b merge-branch'
 
-                // Merge 'origin/dev' into 'master'
-                sh 'git merge origin/dev'
-
-                // Merge 'origin/dev' into 'master' with --allow-unrelated-histories
+                // Merge 'origin/dev' into 'merge-branch' with --allow-unrelated-histories
                 sh 'git merge --allow-unrelated-histories origin/dev'
 
                 // Push changes to 'master'
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
                                                   usernameVariable: 'GIT_USERNAME', 
                                                   passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
                 }
             } catch (Exception e) {
                 // Handle merge failure or check failures
