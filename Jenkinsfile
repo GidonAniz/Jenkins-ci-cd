@@ -99,10 +99,10 @@ pipeline {
 
                         if (!masterExists) {
                             // Create master branch if it doesn't exist
-                            sh 'git checkout -b master'
+                            sh 'git checkout -b prod'
                         } else {
                             // Switch to master branch
-                            sh 'git checkout master'
+                            sh 'git checkout prod'
                         }
 
                         // Merge changes from origin/dev
@@ -119,7 +119,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                               usernameVariable: 'GIT_USERNAME',
                                                               passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                             }
                         } else {
                             echo 'No changes to merge. Skipping commit and push.'
