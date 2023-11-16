@@ -3,6 +3,7 @@ pipeline {
 
  environment {
         GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
+        GIT_USERNAME = 'GidonAniz'
     }
 
     stages {
@@ -82,53 +83,55 @@ pipeline {
     }
 }
 
- stage('Merge Dev to Master') {
-            steps {
-                script {
-                    try {
-                        // Checkout the code using GitHub App credentials
-                        checkout([$class: 'GitSCM', 
-                                  branches: [[name: '*/master']], 
-                                  doGenerateSubmoduleConfigurations: false, 
-                                  extensions: [[$class: 'CloneOption', 
-                                                depth: 1, 
-                                                noTags: false, 
-                                                shallow: true, 
-                                                reference: '/path/to/git/reference']], 
-                                  submoduleCfg: [], 
-                                  userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                                      url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
+  stage('Merge Dev to Master') {
+    steps {
+        script {
+            try {
+                // Checkout the code using GitHub App credentials
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/master']], 
+                          doGenerateSubmoduleConfigurations: false, 
+                          extensions: [[$class: 'CloneOption', 
+                                        depth: 1, 
+                                        noTags: false, 
+                                        shallow: true, 
+                                        reference: '/path/to/git/reference']], 
+                          submoduleCfg: [], 
+                          userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                              url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
 
-                        // Configure Git user identity
-                        sh 'git config user.email "Gidon.Aniz@gmail.com"'
-                        sh 'git config user.name "G.A"'
+                // Configure Git user identity
+                sh "git config user.email 'Gidon.Aniz@gmail.com'"
+                sh "git config user.name 'G.A'"
 
-                        // Fetch changes from both branches
-                        sh 'git fetch origin dev'
-                        sh 'git fetch origin master'
+                // Fetch changes from both branches
+                sh 'git fetch origin dev'
+                sh 'git fetch origin master'
+                sh 'git pull origin master'
 
-                        // Checkout to 'master'
-                        sh 'git checkout master'
+                // Checkout to 'master'
+                sh 'git checkout master'
 
-                        // Merge 'origin/dev' into 'master'
-                        sh 'git merge --allow-unrelated-histories origin/dev'
+                // Merge 'origin/dev' into 'master'
+                sh 'git merge --allow-unrelated-histories origin/dev'
 
-                        // Manually resolve Jenkinsfile conflict
-                        // After resolving the conflict, you need to add and commit the changes
-                        // Then, push the changes to 'master'
-                        // For example:
-                        // sh 'git add Jenkinsfile'
-                        // sh 'git commit -m "Resolve Jenkinsfile conflict"'
-                        // sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
-                    } catch (Exception e) {
-                        // Handle merge failure or check failures
-                        error "Error occurred while merging branches: ${e.message}"
-                    }
+                // Pull changes from remote 'master' to local 'master'
+                sh 'git pull origin master'
+
+                // Push changes to 'master'
+                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                                  usernameVariable: 'GIT_USERNAME', 
+                                                  passwordVariable: 'GIT_PASSWORD')]) {
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
                 }
+            } catch (Exception e) {
+                // Handle merge failure or check failures
+                error "Error occurred while merging branches: ${e.message}"
             }
         }
     }
-
+}
+    }
     post {
         always {
             script {
