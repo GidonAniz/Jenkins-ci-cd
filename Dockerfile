@@ -5,8 +5,8 @@ FROM python:3.8-slim
 WORKDIR /app
 
 # Copy your Python application and requirements.txt to the container
-COPY python/app.py .
-COPY python/requirements.txt .
+COPY app.py .
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install -r requirements.txt
