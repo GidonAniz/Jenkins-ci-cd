@@ -114,7 +114,7 @@ pipeline {
                         sh 'git checkout master'
 
                         // Merge 'origin/dev' into 'master'
-                        sh 'git merge origin/dev'
+                        sh 'git merge --no-ff origin/dev'
 
                         // Push changes to 'master'
                         sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
