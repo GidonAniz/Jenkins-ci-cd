@@ -52,7 +52,7 @@ pipeline {
                         echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin
                         """
                         // Build the Docker image
-                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f python/Dockerfile ."
+                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Dockerfile ."
                     }
                 }
             }
@@ -94,16 +94,10 @@ pipeline {
                         sh 'git checkout dev'
                         sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                        // Check if the master branch exists
-                        def masterExists = sh(script: 'git rev-parse --verify master', returnStatus: true) == 0
-
-                        if (!masterExists) {
-                            // Create master branch if it doesn't exist
-                            sh 'git checkout -b master'
-                        } else {
-                            // Switch to master branch
-                            sh 'git checkout master'
-                        }
+                       
+                        
+                        // Switch to master prod
+                         sh 'git checkout prod'
 
                         // Merge changes from origin/dev
                         sh 'git merge --allow-unrelated-histories origin/dev'
@@ -119,7 +113,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                               usernameVariable: 'GIT_USERNAME',
                                                               passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                             }
                         } else {
                             echo 'No changes to merge. Skipping commit and push.'
