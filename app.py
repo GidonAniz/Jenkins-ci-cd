@@ -40,4 +40,3 @@ if __name__ == "__main__":
     # Print the instance IDs and instance names
     for instance_id, instance_name in instance_info:
         print(f"Instance ID: {instance_id}, Instance Name: {instance_name}")
-
