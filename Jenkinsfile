@@ -119,13 +119,14 @@ stage('Merge Dev to Master') {
                 sh 'git pull origin master'
 
                 // Push changes to 'master'
-                sh "git push https://GidonAniz:${afe25623-3632-4320-ad34-89ce96429f58}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                sh "git push https://GidonAniz:${'afe25623-3632-4320-ad34-89ce96429f58'}@github.com/GidonAniz/Jenkins-ci-cd.git master"
             } catch (Exception e) {
                 // Handle merge failure or check failures
                 error "Error occurred while merging branches: ${e.message}"
             }
         }
     }
+}
     }
     post {
         always {
