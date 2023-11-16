@@ -93,7 +93,7 @@ pipeline {
 
                         // Update the local dev branch
                         sh 'git checkout dev'
-                        sh 'git pull origin dev --no-ff'
+                        sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
                         // Switch to a new branch for the merge
                         sh 'git checkout -b merge-branch'
