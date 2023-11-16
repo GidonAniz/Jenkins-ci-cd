@@ -83,7 +83,7 @@ pipeline {
     }
 }
 
-  stage('Merge Dev to Master') {
+ stage('Merge Dev to Master') {
             steps {
                 script {
                     try {
@@ -94,8 +94,16 @@ pipeline {
                         sh 'git checkout dev'
                         sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                        // Switch to master branch
-                        sh 'git checkout master'
+                        // Check if the master branch exists
+                        def masterExists = sh(script: 'git rev-parse --verify master', returnStatus: true) == 0
+
+                        if (!masterExists) {
+                            // Create master branch if it doesn't exist
+                            sh 'git checkout -b master'
+                        } else {
+                            // Switch to master branch
+                            sh 'git checkout master'
+                        }
 
                         // Merge changes from origin/dev
                         sh 'git merge --allow-unrelated-histories origin/dev'
