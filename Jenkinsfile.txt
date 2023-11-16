@@ -37,7 +37,7 @@ pipeline {
         stage('Linting') {
             steps {
                 script {
-                    sh '. venv/bin/activate && pylint python/app.py || true'
+                    sh '. venv/bin/activate && pylint app.py || true'
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
                         echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin
                         """
                         // Build the Docker image
-                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f python/Dockerfile ."
+                        sh "docker build -t gidonan/cicd:${BUILD_NUMBER} -f Dockerfile ."
                     }
                 }
             }
