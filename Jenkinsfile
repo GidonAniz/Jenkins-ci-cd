@@ -115,18 +115,15 @@ stage('Merge Dev to Master') {
                 // Merge 'origin/dev' into 'master' with strategy 'ours' to prefer master changes
                 sh 'git merge -s ours --allow-unrelated-histories origin/dev'
 
-                // Checkout to 'dev' and merge 'master' into 'dev' to resolve conflicts
-                sh 'git checkout dev'
-                sh 'git merge master'
-
-                // Checkout back to 'master'
-                sh 'git checkout master'
-
                 // Pull changes from remote 'master' to local 'master'
                 sh 'git pull origin master'
 
                 // Push changes to 'master'
-                sh "git push https://GidonAniz:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                                  usernameVariable: 'GIT_USERNAME', 
+                                                  passwordVariable: 'GIT_PASSWORD')]) {
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                }
             } catch (Exception e) {
                 // Handle merge failure or check failures
                 error "Error occurred while merging branches: ${e.message}"
