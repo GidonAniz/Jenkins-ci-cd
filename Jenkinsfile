@@ -114,6 +114,9 @@ stage('Merge Dev to Master') {
                 // Merge 'origin/dev' into 'master'
                 sh 'git merge origin/dev'
 
+                // Merge 'origin/dev' into 'master' with --allow-unrelated-histories
+                sh 'git merge --allow-unrelated-histories origin/dev'
+
                 // Push changes to 'master'
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
                                                   usernameVariable: 'GIT_USERNAME', 
