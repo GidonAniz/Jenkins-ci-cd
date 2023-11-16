@@ -83,7 +83,7 @@ pipeline {
     }
 }
 
-  stage('Merge Dev to Master') {
+stage('Merge Dev to Master') {
     steps {
         script {
             try {
@@ -119,11 +119,7 @@ pipeline {
                 sh 'git pull origin master'
 
                 // Push changes to 'master'
-                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                                  usernameVariable: 'GIT_USERNAME', 
-                                                  passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
-                }
+                sh "git push https://GidonAniz:${'afe25623-3632-4320-ad34-89ce96429f58'}@github.com/GidonAniz/Jenkins-ci-cd.git master"
             } catch (Exception e) {
                 // Handle merge failure or check failures
                 error "Error occurred while merging branches: ${e.message}"
