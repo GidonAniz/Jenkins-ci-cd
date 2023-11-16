@@ -33,3 +33,10 @@ def get_instance_information():
 
     # Return the instance IDs and instance names
     return [(instance['InstanceId'], next((tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name'), 'Unnamed')) for instance in instances]
+
+if __name__ == "__main__":
+    instance_info = get_instance_information()
+
+    # Print the instance IDs and instance names
+    for instance_id, instance_name in instance_info:
+        print(f"Instance ID: {instance_id}, Instance Name: {instance_name}")
