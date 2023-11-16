@@ -112,8 +112,12 @@ pipeline {
                         // Checkout to 'master'
                         sh 'git checkout master'
 
-                        // Push the changes to master
-                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                         // Push changes to 'master'
+                        withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
+                                                          usernameVariable: 'GIT_USERNAME', 
+                                                          passwordVariable: 'GIT_PASSWORD')]) {
+                            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                        }
                     } catch (Exception e) {
                         // Handle merge failure or check failures
                         error "Error occurred while merging branches: ${e.message}"
