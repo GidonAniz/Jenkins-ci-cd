@@ -88,32 +88,22 @@ stage('Merge Dev to Master') {
     steps {
         script {
             try {
-                // Checkout the code using GitHub App credentials
-                checkout([$class: 'GitSCM', 
-                          branches: [[name: '*/master']], 
-                          doGenerateSubmoduleConfigurations: false, 
-                          extensions: [[$class: 'CloneOption', 
-                                        depth: 1, 
-                                        noTags: false, 
-                                        shallow: true, 
-                                        reference: '/path/to/git/reference']], 
-                          submoduleCfg: [], 
-                          userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                              url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
-
-                // Configure Git user identity
-                sh 'git config user.email "Gidon.Aniz@gmail.com"'
-                sh 'git config user.name "G.A"'
-
-                // Fetch changes from both branches
-                sh 'git fetch origin dev'
-                sh 'git fetch origin master'
+                // ... (previous code)
 
                 // Create a new branch for the merge
                 sh 'git checkout -b merge-branch'
 
                 // Merge 'origin/dev' into 'merge-branch' with --allow-unrelated-histories
                 sh 'git merge --allow-unrelated-histories origin/dev'
+
+                // Handle merge conflicts
+                def conflicts = sh(script: 'git ls-files -u', returnStdout: true).trim()
+                if (conflicts) {
+                    error "Merge conflicts exist. Resolve conflicts and commit changes before continuing."
+                }
+
+                // Commit changes
+                sh 'git commit -m "Merge changes from dev"'
 
                 // Push changes to 'master'
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
