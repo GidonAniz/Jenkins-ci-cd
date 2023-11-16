@@ -82,7 +82,7 @@ pipeline {
     }
 }
 
- stage('Merge Dev to Master') {
+  stage('Merge Dev to Master') {
             steps {
                 script {
                     try {
@@ -103,18 +103,15 @@ pipeline {
                         sh 'git config user.email "Gidon.Aniz@gmail.com"'
                         sh 'git config user.name "G.A"'
 
-                        // Specify how to reconcile divergent branches (merge in this case)
-                        sh 'git config pull.rebase false'
-                        sh 'git config pull.ff only'
-
-                        // Pull changes from the remote dev branch
-                        sh 'git pull origin dev'
+                        // Fetch changes from both branches
+                        sh 'git fetch origin dev'
+                        sh 'git fetch origin master'
 
                         // Checkout to 'master'
                         sh 'git checkout master'
 
                         // Merge 'origin/dev' into 'master'
-                        sh 'git merge --no-ff origin/dev'
+                        sh 'git merge origin/dev'
 
                         // Push changes to 'master'
                         sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
