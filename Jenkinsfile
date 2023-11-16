@@ -82,7 +82,7 @@ pipeline {
     }
 }
 
-  stage('Merge Dev to Master') {
+ stage('Merge Dev to Master') {
             steps {
                 script {
                     try {
@@ -110,13 +110,16 @@ pipeline {
                         // Checkout to 'master'
                         sh 'git checkout master'
 
-                         sh 'git merge --allow-unrelated-histories origin/dev'
-
                         // Merge 'origin/dev' into 'master'
-                        sh 'git merge origin/dev'
+                        sh 'git merge --allow-unrelated-histories origin/dev'
 
-                        // Push changes to 'master'
-                        sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
+                        // Manually resolve Jenkinsfile conflict
+                        // After resolving the conflict, you need to add and commit the changes
+                        // Then, push the changes to 'master'
+                        // For example:
+                        // sh 'git add Jenkinsfile'
+                        // sh 'git commit -m "Resolve Jenkinsfile conflict"'
+                        // sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
                     } catch (Exception e) {
                         // Handle merge failure or check failures
                         error "Error occurred while merging branches: ${e.message}"
