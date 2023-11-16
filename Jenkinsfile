@@ -126,7 +126,6 @@ stage('Merge Dev to Master') {
             }
         }
     }
-}
     }
     post {
         always {
