@@ -111,12 +111,6 @@ pipeline {
                         // Checkout to 'master'
                         sh 'git checkout master'
 
-                        // Merge 'origin/dev' into 'master'
-                        sh 'git merge --allow-unrelated-histories origin/dev'
-
-                       
-              
-                        sh 'git commit -m "Resolve Jenkinsfile conflict"'
                         sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
                     } catch (Exception e) {
                         // Handle merge failure or check failures
