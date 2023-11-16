@@ -104,8 +104,9 @@ pipeline {
                         sh 'git config user.name "G.A"'
 
                         // Fetch changes from both branches
-                        sh 'git fetch origin dev'
-                        sh 'git fetch origin master'
+                       sh 'git fetch origin dev'
+                       sh 'git fetch origin master'
+                       sh 'git pull origin master'
 
                         // Checkout to 'master'
                         sh 'git checkout master'
@@ -113,13 +114,10 @@ pipeline {
                         // Merge 'origin/dev' into 'master'
                         sh 'git merge --allow-unrelated-histories origin/dev'
 
-                        // Manually resolve Jenkinsfile conflict
-                        // After resolving the conflict, you need to add and commit the changes
-                        // Then, push the changes to 'master'
-                        // For example:
-                        // sh 'git add Jenkinsfile'
-                        // sh 'git commit -m "Resolve Jenkinsfile conflict"'
-                        // sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
+                       
+              
+                        sh 'git commit -m "Resolve Jenkinsfile conflict"'
+                        sh 'git push https://${GidonAniz}:${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}@github.com/GidonAniz/Jenkins-ci-cd.git master'
                     } catch (Exception e) {
                         // Handle merge failure or check failures
                         error "Error occurred while merging branches: ${e.message}"
