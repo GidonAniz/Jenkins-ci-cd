@@ -83,51 +83,46 @@ pipeline {
     }
 }
 
+  stage('Merge Dev to Master') {
+            steps {
+                script {
+                    try {
+                        // Fetch the latest changes from origin/dev
+                        sh 'git fetch origin dev'
 
-stage('Merge Dev to Master') {
-    steps {
-        script {
-            try {
-                // Checkout the code using GitHub App credentials
-                checkout([$class: 'GitSCM', 
-                          branches: [[name: '*/master']], 
-                          doGenerateSubmoduleConfigurations: false, 
-                          extensions: [[$class: 'CloneOption', 
-                                        depth: 1, 
-                                        noTags: false, 
-                                        shallow: true, 
-                                        reference: '/path/to/git/reference']], 
-                          submoduleCfg: [], 
-                          userRemoteConfigs: [[credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                              url: 'https://github.com/GidonAniz/Jenkins-ci-cd.git']]])
+                        // Update the local dev branch
+                        sh 'git checkout dev'
+                        sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                // Configure Git user identity
-                sh 'git config user.email "Gidon.Aniz@gmail.com"'
-                sh 'git config user.name "G.A"'
+                        // Switch to master branch
+                        sh 'git checkout master'
 
-                // Fetch changes from both branches
-                sh 'git fetch origin dev'
-                sh 'git fetch origin master'
+                        // Merge changes from origin/dev
+                        sh 'git merge --allow-unrelated-histories origin/dev'
 
-                // Create a new branch for the merge
-                sh 'git checkout -b merge-branch'
+                        // Check if there are changes to commit
+                        def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
 
-                // Merge 'origin/dev' into 'merge-branch' with --allow-unrelated-histories
-                sh 'git merge --allow-unrelated-histories origin/dev'
+                        if (hasChanges) {
+                            // Commit the changes
+                            sh 'git commit -am "Merge changes from dev"'
 
-                // Push changes to 'master'
-                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                                  usernameVariable: 'GIT_USERNAME', 
-                                                  passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
+                            // Push changes to master
+                            withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                              usernameVariable: 'GIT_USERNAME',
+                                                              passwordVariable: 'GIT_PASSWORD')]) {
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git master"
+                            }
+                        } else {
+                            echo 'No changes to merge. Skipping commit and push.'
+                        }
+                    } catch (Exception e) {
+                        // Handle merge failure or check failures
+                        error "Error occurred while merging branches: ${e.message}"
+                    }
                 }
-            } catch (Exception e) {
-                // Handle merge failure or check failures
-                error "Error occurred while merging branches: ${e.message}"
             }
         }
-    }
-}
     }
     post {
         always {
