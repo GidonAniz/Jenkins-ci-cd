@@ -27,7 +27,7 @@ pipeline {
         stage('Install Python Dependencies') {
             steps {
                 script {
-                    sh '. venv/bin/activate && pip install -r python/requirements.txt --target ./pip_cache'
+                    sh '. venv/bin/activate && pip install -r requirements.txt --target ./pip_cache'
                     // Install boto3
                     sh '. venv/bin/activate && pip install boto3'
                 }
@@ -94,16 +94,10 @@ pipeline {
                         sh 'git checkout dev'
                         sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                        // Check if the master branch exists
-                        def masterExists = sh(script: 'git rev-parse --verify master', returnStatus: true) == 0
-
-                        if (!masterExists) {
-                            // Create master branch if it doesn't exist
-                            sh 'git checkout -b prod'
-                        } else {
-                            // Switch to master branch
-                            sh 'git checkout prod'
-                        }
+                       
+                        
+                        // Switch to master prod
+                         sh 'git checkout prod'
 
                         // Merge changes from origin/dev
                         sh 'git merge --allow-unrelated-histories origin/dev'
