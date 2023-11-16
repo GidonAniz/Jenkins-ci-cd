@@ -84,40 +84,46 @@ pipeline {
 }
 
 
-stage('Merge Dev to Master') {
-    steps {
-        script {
-            try {
-                // ... (previous code)
+  stage('Merge Dev to Master') {
+            steps {
+                script {
+                    try {
+                        // Fetch the latest changes from origin/dev
+                        sh 'git fetch origin dev'
 
-                // Create a new branch for the merge
-                sh 'git checkout -b merge-branch'
+                        // Update the local dev branch
+                        sh 'git checkout dev'
+                        sh 'git pull origin dev'
 
-                // Merge 'origin/dev' into 'merge-branch' with --allow-unrelated-histories
-                sh 'git merge --allow-unrelated-histories origin/dev'
+                        // Switch to a new branch for the merge
+                        sh 'git checkout -b merge-branch'
 
-                // Handle merge conflicts
-                def conflicts = sh(script: 'git ls-files -u', returnStdout: true).trim()
-                if (conflicts) {
-                    error "Merge conflicts exist. Resolve conflicts and commit changes before continuing."
+                        // Merge changes from origin/dev
+                        sh 'git merge --allow-unrelated-histories origin/dev'
+
+                        // Check if there are changes to commit
+                        def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
+
+                        if (hasChanges) {
+                            // Commit the changes
+                            sh 'git commit -am "Merge changes from dev"'
+
+                            // Push changes to master
+                            withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                              usernameVariable: 'GIT_USERNAME',
+                                                              passwordVariable: 'GIT_PASSWORD')]) {
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
+                            }
+                        } else {
+                            echo 'No changes to merge. Skipping commit and push.'
+                        }
+                    } catch (Exception e) {
+                        // Handle merge failure or check failures
+                        error "Error occurred while merging branches: ${e.message}"
+                    }
                 }
-
-                // Commit changes
-                sh 'git commit -m "Merge changes from dev"'
-
-                // Push changes to 'master'
-                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID, 
-                                                  usernameVariable: 'GIT_USERNAME', 
-                                                  passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git merge-branch:master"
-                }
-            } catch (Exception e) {
-                // Handle merge failure or check failures
-                error "Error occurred while merging branches: ${e.message}"
             }
         }
-    }
-}
     }
     post {
         always {
