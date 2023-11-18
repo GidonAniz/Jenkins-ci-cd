@@ -4,7 +4,7 @@ pipeline {
  environment {
         GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
         GIT_USERNAME = 'GidonAniz'
-        INTERVAL_MINUTES = params.INTERVAL_MINUTES ?: '5'
+        INTERVAL_MINUTES = params.INTERVAL_MINUTES
     }
 
     stages {
