@@ -4,7 +4,6 @@ pipeline {
  environment {
         GITHUB_APP_CREDENTIALS_ID = 'afe25623-3632-4320-ad34-89ce96429f58'
         GIT_USERNAME = 'GidonAniz'
-        INTERVAL_MINUTES = '5' // Default interval is set to 5 minutes
     }
 
     stages {
@@ -79,7 +78,7 @@ pipeline {
     steps {
         script {
             // Run the Docker container
-            sh "docker run -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER}"
+            sh "docker run -e gidonan/cicd:${BUILD_NUMBER}"
         }
     }
 }
