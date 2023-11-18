@@ -7,8 +7,6 @@ pipeline {
         INTERVAL_MINUTES = '5' // Default interval is set to 5 minutes
     }
 
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
