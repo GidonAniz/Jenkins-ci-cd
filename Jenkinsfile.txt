@@ -78,7 +78,7 @@ pipeline {
     steps {
         script {
             // Run the Docker container
-           docker run -e INTERVAL_MINUTES=5 gidonan/cicd:${BUILD_NUMBER}docker run -e INTERVAL_MINUTES=5 gidonan/cicd:${BUILD_NUMBER}
+           sh "docker run -e INTERVAL_MINUTES=5 gidonan/cicd:${BUILD_NUMBER}"
         }
     }
 }
