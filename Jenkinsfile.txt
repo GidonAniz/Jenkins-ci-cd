@@ -71,7 +71,20 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    // Run the Docker container in detached mode and redirect output to a log file
                     sh "docker run -d -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER} > output.log"
+                }
+            }
+        }
+
+        stage('Wait for Docker Container') {
+            steps {
+                script {
+                    // Retrieve the container ID
+                    def containerId = sh(script: 'docker ps -q', returnStdout: true).trim()
+
+                    // Wait for the Docker container to finish
+                    sh "docker wait ${containerId}"
                 }
             }
         }
@@ -79,6 +92,7 @@ pipeline {
         stage('Display Output') {
             steps {
                 script {
+                    // Display the contents of the output log
                     sh 'cat output.log'
                 }
             }
