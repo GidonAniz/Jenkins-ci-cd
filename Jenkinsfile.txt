@@ -80,11 +80,16 @@ pipeline {
 stage('Wait for Docker Container') {
     steps {
         script {
-            // Retrieve the container ID
-            def containerId = sh(script: 'docker ps -q', returnStdout: true).trim()
+            // Retrieve the container ID excluding the Jenkins container
+            def containerId = sh(script: 'docker ps -q | grep -v my-jenkins-container | head -n 1', returnStdout: true).trim()
 
-            // Wait for the Docker container to finish
-            sh "docker wait ${containerId}"
+            // Check if the container ID is not empty
+            if (containerId) {
+                // Wait for the Docker container to finish
+                sh "docker wait ${containerId}"
+            } else {
+                echo 'No running Docker containers found, excluding Jenkins.'
+            }
         }
     }
 }
