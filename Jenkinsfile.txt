@@ -84,6 +84,15 @@ pipeline {
     }
 }
 
+stage('Display Output') {
+            steps {
+                script {
+                    // Display the contents of the output log
+                    sh "cat output.log"
+                }
+            }
+        }
+
  stage('Merge Dev to Master') {
             steps {
                 script {
