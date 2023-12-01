@@ -1,8 +1,8 @@
-import boto3
 import os
-import schedule
 import time
 import json
+import boto3
+import schedule
 
 
 def get_instance_information():
