@@ -71,8 +71,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh "docker run -d -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER}" > output.log"
-                    sh 'cat output.log'
+                    sh "docker run -d -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER} > output.log"
                 }
             }
         }
