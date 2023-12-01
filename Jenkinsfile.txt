@@ -68,21 +68,32 @@ pipeline {
             }
         }
 
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    sh "docker run -d -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER} > output.log"
-                }
-            }
-        }
+  stage('Run Docker Container') {
+    steps {
+        script {
+            // Run the Docker container in detached mode, capture container ID, and redirect logs to a file
+            def containerId = sh(script: "docker run -d -e INTERVAL_MINUTES=${INTERVAL_MINUTES} gidonan/cicd:${BUILD_NUMBER} > output.log", returnStdout: true).trim()
 
-        stage('Display Output') {
-            steps {
-                script {
-                    sh 'cat output.log'
-                }
-            }
+            // Sleep for a short time to allow the initial output to be captured
+            sleep time: 10, unit: 'SECONDS'
+
+            // Display the initial contents of the output log
+            sh 'cat output.log'
+
+            // Continue with the pipeline while the script inside the container runs
         }
+    }
+}
+
+stage('Display Output') {
+    steps {
+        script {
+            // Display the contents of the output log
+            sh 'cat output.log'
+        }
+    }
+}
+
 
         stage('Merge Dev to Master') {
             steps {
