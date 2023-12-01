@@ -51,7 +51,7 @@ def print_instance_info():
 
 if __name__ == "__main__":
     # Get the interval from the environment variable, defaulting to 5 minutes
-    interval_minutes = int(os.environ.get('INTERVAL_MINUTES', 0.1))
+    interval_minutes = int(os.environ.get('INTERVAL_MINUTES', 5))
 
     # Schedule the job to run every specified interval
     schedule.every(interval_minutes).minutes.do(print_instance_info)
