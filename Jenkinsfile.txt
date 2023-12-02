@@ -110,15 +110,13 @@ stage('Merge Dev to Master') {
                 // Switch to master prod
                 sh 'git checkout prod'
 
-                // Explicitly merge changes from dev
-                sh 'git merge --allow-unrelated-histories origin/dev'
+                // Get the latest commit SHAs for dev and prod
+                def devCommit = sh(script: 'git rev-parse origin/dev', returnStdout: true).trim()
+                def prodCommit = sh(script: 'git rev-parse origin/prod', returnStdout: true).trim()
 
-                // Check if there are changes to commit
-                def hasChanges = sh(script: 'git log --oneline prod..dev', returnStatus: true) != 0
-
-                if (hasChanges) {
-                    // Commit the changes
-                    sh 'git commit -am "Merge changes from dev"'
+                if (devCommit != prodCommit) {
+                    // Merge changes from dev
+                    sh 'git merge --allow-unrelated-histories dev'
 
                     // Push changes to prod
                     withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
@@ -136,10 +134,7 @@ stage('Merge Dev to Master') {
         }
     }
 }
-
-
 }
-
 
     post {
         always {
