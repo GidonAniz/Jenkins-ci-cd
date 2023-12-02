@@ -116,17 +116,14 @@ stage('Merge Dev to Master') {
                 // Reset local prod to match the remote
                 sh 'git reset --hard origin/prod'
 
-                // Merge changes from origin/dev
-                sh 'git merge --allow-unrelated-histories -X theirs origin/dev'
+                // Merge changes from origin/dev with fast-forward only
+                sh 'git merge --ff-only origin/dev'
 
-                // Commit the changes
-                sh 'git commit -am "Merge changes from dev"'
-
-                // Force push changes to master
+                // Push changes to master
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                   usernameVariable: 'GIT_USERNAME',
                                                   passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                 }
             } catch (Exception e) {
                 // Handle merge failure or check failures
