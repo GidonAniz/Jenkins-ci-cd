@@ -126,6 +126,8 @@ stage('Merge Dev to Master') {
                                                               usernameVariable: 'GIT_USERNAME',
                                                               passwordVariable: 'GIT_PASSWORD')]) {
                                 sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
+
+                            //This is only test to check if branches merge
                             }
                         } else {
                             echo 'No changes to merge. Skipping commit and push.'
