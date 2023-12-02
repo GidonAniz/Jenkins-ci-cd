@@ -113,7 +113,7 @@ stage('Merge Dev to Master') {
                 sh 'git merge --allow-unrelated-histories origin/dev'
 
                 // Check if there are changes in the working directory
-                def hasChanges = sh(script: 'git diff --exit-code', returnStatus: true) != 0
+                def hasChanges = sh(script: 'git diff --exit-code | wc -l', returnStatus: true) != 0
 
                 if (hasChanges) {
                     // Commit the changes
@@ -135,6 +135,7 @@ stage('Merge Dev to Master') {
         }
     }
 }
+
 
 }
 
