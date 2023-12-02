@@ -8,7 +8,7 @@ The project built with ...
     2. Checking with AWS (using boto) if there are machines up and running with the following tags: --filters "Name=tag:k8s.io/role/master,Values=1"  "Name=instance-state-code,Values=16” 
     3. If there is a response (IP’s) > the app Count them and output to stdout a log line
 
-2. Jenkins pipeline that:
+3. Jenkins pipeline that:
    1. Lint is set to not failing the code but only warning.
    2. Using DSL to build the first job that listens to jenkins pipelines that run in turn the container pipelines.
    3. Build docker image and push it to dockerhub.
