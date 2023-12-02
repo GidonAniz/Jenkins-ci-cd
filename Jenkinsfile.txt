@@ -130,6 +130,7 @@ stage('Merge Dev to Master') {
                              sh 'git fetch origin dev prod'
                             }
                         } else {
+                             sh "git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                             echo 'No changes to merge. Skipping commit and push.'
                         }
                     } catch (Exception e) {
