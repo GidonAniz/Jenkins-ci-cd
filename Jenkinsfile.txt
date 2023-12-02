@@ -95,55 +95,48 @@ stage('Display Output') {
     }
 }
 
-
 stage('Merge Dev to Master') {
-    steps {
-        script {
-            try {
-                // Fetch the latest changes from origin/dev
-                sh 'git fetch origin dev'
+            steps {
+                script {
+                    try {
+                        // Fetch the latest changes from origin/dev
+                        sh 'git fetch origin dev'
 
-                // Update the local dev branch
-                sh 'git checkout dev'
-                sh 'git pull origin dev --allow-unrelated-histories --no-ff'
+                        // Update the local dev branch
+                        sh 'git checkout dev'
+                        sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                // Switch to master prod
-                sh 'git checkout prod'
+                       
+                        
+                        // Switch to master prod
+                         sh 'git checkout prod'
 
-                // Get the latest commit SHAs for dev and prod
-                def devCommit = sh(script: 'git rev-parse origin/dev', returnStdout: true).trim()
-                def prodCommit = sh(script: 'git rev-parse origin/prod', returnStdout: true).trim()
+                        // Merge changes from origin/dev
+                        sh 'git merge --allow-unrelated-histories origin/dev'
 
-                if (devCommit != prodCommit) {
-                    // Merge changes from dev
-                    sh 'git merge --allow-unrelated-histories dev'
+                        // Check if there are changes to commit
+                        def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
 
-                    // Pull the latest changes from prod
-                    sh 'git pull origin prod'
+                        if (hasChanges) {
+                            // Commit the changes
+                            sh 'git commit -am "Merge changes from dev"'
 
-                    // Resolve conflicts if any
-                    // (You might need to add this step depending on your needs)
-
-                    // Push changes to prod using withCredentials
-                    withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
-                                                      usernameVariable: 'GIT_USERNAME',
-                                                      passwordVariable: 'GIT_PASSWORD')]) {
-                        sh 'git config --global user.email "jenkins@example.com"'
-                        sh 'git config --global user.name "Jenkins"'
-                        sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod'
+                            // Push changes to master
+                            withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                              usernameVariable: 'GIT_USERNAME',
+                                                              passwordVariable: 'GIT_PASSWORD')]) {
+                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
+                            }
+                        } else {
+                            echo 'No changes to merge. Skipping commit and push.'
+                        }
+                    } catch (Exception e) {
+                        // Handle merge failure or check failures
+                        error "Error occurred while merging branches: ${e.message}"
                     }
-                } else {
-                    echo 'No changes to merge. Skipping commit and push.'
                 }
-            } catch (Exception e) {
-                // Handle merge failure or check failures
-                error "Error occurred while merging branches: ${e.message}"
             }
         }
-    }
-}
-
-
 }
 
     post {
