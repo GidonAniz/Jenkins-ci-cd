@@ -110,11 +110,11 @@ stage('Merge Dev to Master') {
                 // Switch to master prod
                 sh 'git checkout prod'
 
-                // Pull the latest changes from the remote prod branch
-                sh 'git pull origin prod'
+                // Fetch the latest changes from origin/prod
+                sh 'git fetch origin prod'
 
-                // Merge changes from origin/dev
-                sh 'git merge --allow-unrelated-histories origin/dev'
+                // Merge changes from origin/dev into prod
+                sh 'git merge origin/dev'
 
                 // Check if there are changes to commit
                 def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
@@ -123,7 +123,7 @@ stage('Merge Dev to Master') {
                     // Commit the changes
                     sh 'git commit -am "Merge changes from dev"'
 
-                    // Push changes to master
+                    // Push changes to prod
                     withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                       usernameVariable: 'GIT_USERNAME',
                                                       passwordVariable: 'GIT_PASSWORD')]) {
@@ -139,7 +139,6 @@ stage('Merge Dev to Master') {
         }
     }
 }
-
 }
 
 
