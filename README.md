@@ -1,7 +1,8 @@
 # Jenkins-ci-cd
 Jenkins-ci-cd - Devops course project
 
-the project built with 
+The project built with ...
+
   1. Python app that:
     1. Running every 5 minutes (configurable via environment variable)
     2. Checking with AWS (using boto) if there are machines up and running with the following tags: --filters "Name=tag:k8s.io/role/master,Values=1"  "Name=instance-state-code,Values=16” 
