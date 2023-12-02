@@ -126,8 +126,8 @@ stage('Merge Dev to Master') {
                             withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                               usernameVariable: 'GIT_USERNAME',
                                                               passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
-                                sh 'git fetch origin dev prod'
+                             sh "git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
+                             sh 'git fetch origin dev prod'
                             }
                         } else {
                             echo 'No changes to merge. Skipping commit and push.'
