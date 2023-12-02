@@ -95,7 +95,7 @@ stage('Display Output') {
     }
 }
 
-stage('Merge Dev to Master') {
+stage('Merge Dev to Production') {
     steps {
         script {
             try {
@@ -116,14 +116,21 @@ stage('Merge Dev to Master') {
                 // Reset local prod to match the remote
                 sh 'git reset --hard origin/production'
 
-                // Merge changes from origin/dev with fast-forward only
-                sh 'git merge --ff-only origin/dev'
+                // Check if there are changes to merge
+                def hasChanges = sh(script: 'git diff-index --quiet HEAD dev --', returnStatus: true) != 0
 
-                // Push changes to master
-                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
-                                                  usernameVariable: 'GIT_USERNAME',
-                                                  passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git production"
+                if (hasChanges) {
+                    // Merge changes from origin/dev with fast-forward only
+                    sh 'git merge --ff-only origin/dev'
+
+                    // Push changes to production
+                    withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                      usernameVariable: 'GIT_USERNAME',
+                                                      passwordVariable: 'GIT_PASSWORD')]) {
+                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git production"
+                    }
+                } else {
+                    echo 'No changes to merge. Skipping commit and push.'
                 }
             } catch (Exception e) {
                 // Handle merge failure or check failures
@@ -132,6 +139,7 @@ stage('Merge Dev to Master') {
         }
     }
 }
+
 
 }
 
