@@ -106,15 +106,15 @@ stage('Merge Dev to Master') {
                 sh 'git checkout dev'
                 sh 'git pull origin --rebase dev'
 
-                // Switch to master prod
-                sh 'git checkout prod'
+                // Switch to master production
+                sh 'git checkout production'
 
-                // Fetch and pull changes from origin/prod
-                sh 'git fetch origin prod'
-                sh 'git pull origin prod'
+                // Fetch and pull changes from origin/production
+                sh 'git fetch origin production'
+                sh 'git pull origin production'
 
                 // Reset local prod to match the remote
-                sh 'git reset --hard origin/prod'
+                sh 'git reset --hard origin/production'
 
                 // Merge changes from origin/dev with fast-forward only
                 sh 'git merge --ff-only origin/dev'
@@ -123,7 +123,7 @@ stage('Merge Dev to Master') {
                 withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
                                                   usernameVariable: 'GIT_USERNAME',
                                                   passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
+                    sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git production"
                 }
             } catch (Exception e) {
                 // Handle merge failure or check failures
@@ -132,10 +132,6 @@ stage('Merge Dev to Master') {
         }
     }
 }
-
-
-
-
 
 }
 
