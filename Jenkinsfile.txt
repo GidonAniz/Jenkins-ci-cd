@@ -114,7 +114,7 @@ stage('Merge Dev to Master') {
                 sh 'git pull origin prod'
 
                 // Merge changes from origin/dev
-                sh 'git merge --allow-unrelated-histories origin/dev'
+                sh 'git merge --allow-unrelated-histories -X theirs origin/dev'
 
                 // Commit the changes
                 sh 'git commit -am "Merge changes from dev"'
