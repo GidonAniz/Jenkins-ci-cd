@@ -118,8 +118,11 @@ stage('Merge Dev to Master') {
                     // Merge changes from dev
                     sh 'git merge --allow-unrelated-histories dev'
 
-                    // Pull the latest changes from prod before pushing
+                    // Pull the latest changes from prod
                     sh 'git pull origin prod'
+
+                    // Resolve conflicts if any
+                    // (You might need to add this step depending on your needs)
 
                     // Push changes to prod using withCredentials
                     withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
@@ -139,6 +142,7 @@ stage('Merge Dev to Master') {
         }
     }
 }
+
 
 }
 
