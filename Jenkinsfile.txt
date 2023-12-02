@@ -97,54 +97,49 @@ stage('Display Output') {
 
 
 stage('Merge Dev to Master') {
-            steps {
-                script {
-                    try {
-                        // Fetch the latest changes from origin/dev
-                        sh 'git fetch origin dev'
+    steps {
+        script {
+            try {
+                // Fetch the latest changes from origin/dev
+                sh 'git fetch origin dev'
 
-                        // Update the local dev branch
-                        sh 'git checkout dev'
-                        sh 'git pull origin dev --allow-unrelated-histories --no-ff'
+                // Update the local dev branch
+                sh 'git checkout dev'
+                sh 'git pull origin dev --allow-unrelated-histories --no-ff'
 
-                       
-                        
-                        // Switch to master prod
-                         sh 'git checkout prod'
+                // Switch to master prod
+                sh 'git checkout prod'
 
-                        // Merge changes from origin/dev
-                        sh 'git merge --allow-unrelated-histories origin/dev'
+                // Pull the latest changes from the remote prod branch
+                sh 'git pull origin prod'
 
-                        // Check if there are changes to commit
-                        def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
+                // Merge changes from origin/dev
+                sh 'git merge --allow-unrelated-histories origin/dev'
 
-                        if (hasChanges) {
-                            // Commit the changes
-                            sh 'git commit -am "Merge changes from dev"'
+                // Check if there are changes to commit
+                def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
 
-                            // Push changes to master
-                            withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
-                                                              usernameVariable: 'GIT_USERNAME',
-                                                              passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
-                            }
-                        } else {
-                             // Push changes to master
-                            withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
-                                                              usernameVariable: 'GIT_USERNAME',
-                                                              passwordVariable: 'GIT_PASSWORD')]) {
-                                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
-                                }
-                                echo 'No changes to merge. Skipping commit and push.'
-                        }
-                    } catch (Exception e) {
-                        // Handle merge failure or check failures
-                        error "Error occurred while merging branches: ${e.message}"
+                if (hasChanges) {
+                    // Commit the changes
+                    sh 'git commit -am "Merge changes from dev"'
+
+                    // Push changes to master
+                    withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                      usernameVariable: 'GIT_USERNAME',
+                                                      passwordVariable: 'GIT_PASSWORD')]) {
+                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                     }
+                } else {
+                    echo 'No changes to merge. Skipping commit and push.'
                 }
+            } catch (Exception e) {
+                // Handle merge failure or check failures
+                error "Error occurred while merging branches: ${e.message}"
             }
         }
     }
+}
+
 
     post {
         always {
