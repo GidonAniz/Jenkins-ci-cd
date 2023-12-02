@@ -1,1 +1,2 @@
 Test file for checking merge
+now i want add words and test it again.
