@@ -110,14 +110,11 @@ stage('Merge Dev to Master') {
                 // Switch to master prod
                 sh 'git checkout prod'
 
-                // Fetch the latest changes from origin/prod
-                sh 'git fetch origin prod'
-
-                // Merge changes from origin/dev into prod
-                sh 'git merge origin/dev'
+                // Explicitly merge changes from dev
+                sh 'git merge --allow-unrelated-histories origin/dev'
 
                 // Check if there are changes to commit
-                def hasChanges = sh(script: 'git diff-index --quiet HEAD --', returnStatus: true) != 0
+                def hasChanges = sh(script: 'git diff --exit-code', returnStatus: true) != 0
 
                 if (hasChanges) {
                     // Commit the changes
@@ -139,6 +136,7 @@ stage('Merge Dev to Master') {
         }
     }
 }
+
 }
 
 
