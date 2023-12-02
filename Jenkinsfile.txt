@@ -116,21 +116,14 @@ stage('Merge Dev to Master') {
                 // Merge changes from origin/dev
                 sh 'git merge --allow-unrelated-histories origin/dev'
 
-                // Check if there are changes in the working directory
-                def hasChanges = sh(script: 'git diff --exit-code | wc -l', returnStatus: true) != 0
+                // Commit the changes
+                sh 'git commit -am "Merge changes from dev"'
 
-                if (hasChanges) {
-                    // Commit the changes
-                    sh 'git commit -am "Merge changes from dev"'
-
-                    // Push changes to master with force
-                    withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
-                                                      usernameVariable: 'GIT_USERNAME',
-                                                      passwordVariable: 'GIT_PASSWORD')]) {
-                        sh "git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
-                    }
-                } else {
-                    echo 'No changes to merge. Skipping commit and push.'
+                // Force push changes to master
+                withCredentials([usernamePassword(credentialsId: GITHUB_APP_CREDENTIALS_ID,
+                                                  usernameVariable: 'GIT_USERNAME',
+                                                  passwordVariable: 'GIT_PASSWORD')]) {
+                    sh "git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/GidonAniz/Jenkins-ci-cd.git prod"
                 }
             } catch (Exception e) {
                 // Handle merge failure or check failures
@@ -139,7 +132,6 @@ stage('Merge Dev to Master') {
         }
     }
 }
-
 
 
 }
