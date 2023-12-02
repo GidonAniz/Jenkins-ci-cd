@@ -13,7 +13,9 @@ The project built with ...
      2. Using DSL to build the first job that listens to jenkins pipelines that run in turn the container pipelines.
      3. Build docker image and push it to dockerhub.
      4. Run the docker image and create container on the local machine (continue to run).
-     5. If dev branch change it merge it with prod branch.
+     5. If dev branch change and tests in jenkins succeed dev merge to prod.
+  
+  
 
      
      
