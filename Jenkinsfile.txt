@@ -113,6 +113,9 @@ stage('Merge Dev to Master') {
                 sh 'git fetch origin prod'
                 sh 'git pull origin prod'
 
+                // Force set the local prod branch to match the remote
+                sh 'git reset --hard origin/prod'
+
                 // Merge changes from origin/dev
                 sh 'git merge --allow-unrelated-histories -X theirs origin/dev'
 
